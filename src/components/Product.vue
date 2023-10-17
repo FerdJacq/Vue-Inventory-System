@@ -1,12 +1,15 @@
 <template>
     <div class="container">
-        <modalComponent :modalActive="modalActive">
-            <div class="modal-content">
-                <h1>this is modal header</h1>
-                <p>this is modal body</p>
-            </div>
-        </modalComponent>
-        <button @click="toggleModal" type="button">Modal</button>
+        <div>
+    <button @click="showModal = true">Open Modal</button>
+
+    <modalComponent :show="showModal" @close="showModal = false">
+      <div>
+        <h2>Modal Content</h2>
+        <p>Any content you want in the modal.</p>
+      </div>
+    </modalComponent>
+  </div>
         <table class="table table-hover">
             <thead>
                 <tr>
@@ -33,13 +36,13 @@
 <script>
 import axios from 'axios';
 import modalComponent from '../components/Modal.vue';
-import {ref} from 'vue';
 
     export default{
         name: 'productComponent',
         data() {
             return {
-                productVue:Array
+                productVue:Array,
+                showModal: true
             }
         },
         created(){
@@ -62,14 +65,6 @@ import {ref} from 'vue';
         components:{
             modalComponent,
         },
-        setup(){
-            const modalActive = ref(false);
-            const toggleModal = () => {
-                modalActive.value =!modalActive.value;
-            };
-
-            return {modalActive, toggleModal};
-        }
     }
 
 </script>
