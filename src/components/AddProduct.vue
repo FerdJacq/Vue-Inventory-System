@@ -1,7 +1,7 @@
 <template>
    <div class="container">
     <div class="row">
-        <div class="col-md-6">
+        <div>
             <div class="alert alert-danger" v-if="errors.length">
                 <ul class="mb-0">
                     <li v-for="(errors, index) in errors" :key="index">
@@ -9,35 +9,35 @@
                     </li>
                 </ul>
             </div>
+            <h3>Add Product</h3>
             <form @submit.prevent="productVue_add" novalidate>
                 <fieldset>
                     <div class="form-group">
-                        <label class="form-label mt-4">Name</label>
+                        <label class="form-label mt-2">Name</label>
                         <input type="text" class="form-control"
                         v-model="products.name" placeholder="Enter Name">
                     </div>
                     <div class="form-group">
-                        <label class="form-label mt-4">Description</label>
+                        <label class="form-label mt-2">Description</label>
                         <input type="text" class="form-control"
                         v-model="products.description" placeholder="Description">
                     </div>
                     <div class="form-group">
-                        <label class="form-label mt-4">Quantity</label>
+                        <label class="form-label mt-2">Quantity</label>
                         <input type="number" class="form-control"
                         v-model="products.quantity" placeholder="Quantity">
                     </div>
                     <div class="form-group">
-                        <label class="form-label mt-4">Price</label>
+                        <label class="form-label mt-2">Price</label>
                         <input type="number" class="form-control"
                         v-model="products.price" placeholder="Price">
                     </div>
                     <div class="form-group">
-                        <label class="form-label mt-4">Image</label>
+                        <label class="form-label mt-2">Image</label>
                         <input type="file" class="form-control"
                         accept="image/*">
                     </div>
-
-                    <button class="btn btn-primary mt-4" name="submit" type="submit">Submit</button>
+                    <button class="btn btn-primary"  name="submit" type="submit">Submit</button>
                 </fieldset>
             </form>
         </div>
@@ -47,8 +47,9 @@
 
 <script>
 import axios from 'axios';
+
     export default{
-        name: 'AddProductComponent',
+        name: 'addProductComponent',
         data(){
             return{
                 products:{},
@@ -57,7 +58,7 @@ import axios from 'axios';
                 quantity:'',
                 price:'',
                 Image:'',
-                errors:[]
+                errors:[],
             }
         },
         methods:{
@@ -85,9 +86,7 @@ import axios from 'axios';
                     let url = 'http://127.0.0.1:8000/api/addproduct';
                     await axios.post(url, formData).then((response)=>{
                         console.log(response);
-                        if(response.status==200){
-                            alert(response.data.message)
-                        }
+                        this.$emit('close');
                     });
                 }
             }
@@ -95,3 +94,11 @@ import axios from 'axios';
     }
     
 </script>
+
+<style>
+.btn.btn-primary{
+    float: right;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+</style>
