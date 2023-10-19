@@ -4,12 +4,13 @@
             <button @click="showModal = true">Open Modal</button>
             <modalComponent v-if="showModal" @close="showModal = false">
                 
-                <editProductComponent />
+                <editProductComponent/>
             </modalComponent>
             <addProductComponent @close="closeModal" />
         </div>  
         <table class="table table-hover">
             <thead>
+                
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">Name</th>
@@ -28,10 +29,13 @@
                     <th scope="row">{{ product.price }}</th>
                     <th scope="row">
                         
-                        <router-link class="btn btn-warning btn-sm" 
+                        <!-- <router-link class="btn btn-warning btn-sm" 
                         :to="{name:'editProductComponent', params:{id:product.id}}"
-                        >Edit</router-link>
+                        >Edit</router-link> -->
                         
+                        <button class="btn btn-warning btn-sm" 
+                        @click.prevent="updateModal(product.id)">Edit</button>
+
                         <button class="btn btn-danger btn-sm" 
                         @click.prevent="productVue_del(product.id)">Delete</button></th>
                 </tr>
@@ -46,6 +50,7 @@ import modalComponent from '../components/Modal.vue';
 import addProductComponent from './AddProduct.vue';
 import editProductComponent from './EditProduct.vue';
 
+
     export default{
         name: 'productComponent',
         data() {
@@ -56,6 +61,10 @@ import editProductComponent from './EditProduct.vue';
         },
         created(){
             this.getProduct();
+        },
+        props:{
+            id: Number,
+            name:String,
         },
         methods:{
             async getProduct(){
@@ -81,6 +90,10 @@ import editProductComponent from './EditProduct.vue';
                     console.log(error);
                 });
             },
+            updateModal(id){
+                this.showModal = true;
+                console.log(id, "product here");
+            }
         },
         mounted(){
             console.log('Product is mounted');
@@ -90,6 +103,7 @@ import editProductComponent from './EditProduct.vue';
             addProductComponent,
             editProductComponent,
         },
+    
     }
 
 </script>

@@ -9,8 +9,8 @@
                      </li>
                  </ul>
              </div>
-             <h3>Edit Product</h3>
-             <form @submit.prevent="productVue_update" novalidate>{{ products.id }}
+             <h3>Edit Product{{ products.id }}</h3>
+             <form @submit.prevent="productVue_update" novalidate>
                  <fieldset>
                      <div class="form-group">
                          <label class="form-label mt-2">Name</label>
