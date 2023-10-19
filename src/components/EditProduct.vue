@@ -9,28 +9,28 @@
                      </li>
                  </ul>
              </div>
-             <h3>Edit Product{{ products.id }}</h3>
+             <h3>Edit Product</h3>
              <form @submit.prevent="productVue_update" novalidate>
                  <fieldset>
                      <div class="form-group">
                          <label class="form-label mt-2">Name</label>
                          <input type="text" class="form-control"
-                         v-model="products.name" placeholder="Enter Name">
+                         v-model="product.name" placeholder="Enter Name" >
                      </div>
                      <div class="form-group">
                          <label class="form-label mt-2">Description</label>
                          <input type="text" class="form-control"
-                         v-model="products.description" placeholder="Description">
+                         v-model="product.description" placeholder="Description">
                      </div>
                      <div class="form-group">
                          <label class="form-label mt-2">Quantity</label>
                          <input type="number" class="form-control"
-                         v-model="products.quantity" placeholder="Quantity">
+                         v-model="product.quantity" placeholder="Quantity">
                      </div>
                      <div class="form-group">
                          <label class="form-label mt-2">Price</label>
                          <input type="number" class="form-control"
-                         v-model="products.price" placeholder="Price">
+                         v-model="product.price" placeholder="Price">
                      </div>
                      <div class="form-group">
                          <label class="form-label mt-2">Image</label>
@@ -52,13 +52,13 @@ import axios from 'axios';
         name:'editProductComponent',
         data(){
             return{
-                products:{},
-                name:'',
-                description:'',
-                quantity:'',
-                price:'',
-                Image:'',
                 errors:[],
+                updateproduct:{
+                    name: this.product ? this.product.name : '',
+                    description: this.product ? this.product.description : '',
+                    quantity: this.product ? this.product.quantity : '',
+                    price: this.product ? this.product.price : '',
+                },
             }
         },
         created(){
@@ -109,7 +109,8 @@ import axios from 'axios';
         },
         mounted: function(){
             console.log('Edit Component is Loaded!!');
-        }
+        },
+        props:['product', 'updateProduct'],
     }
 </script>
 <style>

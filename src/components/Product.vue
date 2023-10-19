@@ -1,12 +1,16 @@
 <template>
     <div class="container">
         <div>
-            <button @click="showModal = true">Open Modal</button>
-            <modalComponent v-if="showModal" @close="showModal = false">
-                
-                <editProductComponent/>
+            <div class="d-flex">
+               <input class="search form-control me-sm-2 mt-4 mb-4" type="search" placeholder="Search">
+                <button @click="showModalComponent" id="addbtn" class="btn btn-primary mt-4 mb-4">Add Product</button>
+            </div>
+             <modalComponent v-if="showModal " @close="showModal = false" >
+                <addProductComponent  @close="closeModal"/>
+                <editProductComponent v-if="selectedProduct" :product="selectedProduct" @close="closeModal"/>
             </modalComponent>
-            <addProductComponent @close="closeModal" />
+            
+            
         </div>  
         <table class="table table-hover">
             <thead>
@@ -34,10 +38,10 @@
                         >Edit</router-link> -->
                         
                         <button class="btn btn-warning btn-sm" 
-                        @click.prevent="updateModal(product.id)">Edit</button>
+                        @click.prevent="updateModal(product)" id="editbtn">Edit</button>
 
                         <button class="btn btn-danger btn-sm" 
-                        @click.prevent="productVue_del(product.id)">Delete</button></th>
+                        @click.prevent="productVue_del(product.id)" >Delete</button></th>
                 </tr>
             </tbody>
         </table>
@@ -56,15 +60,18 @@ import editProductComponent from './EditProduct.vue';
         data() {
             return {
                 productVue:Array,
-                showModal:false
+                showModal:false,
+                product: [{
+                    name: null,
+                    description: null,
+                    quantity: null,
+                    price:null,
+                    }],
+                selectedProduct:null,
             }
         },
         created(){
             this.getProduct();
-        },
-        props:{
-            id: Number,
-            name:String,
         },
         methods:{
             async getProduct(){
@@ -80,6 +87,9 @@ import editProductComponent from './EditProduct.vue';
                 this.showModal = false; // Set showModal to false
                 this.getProduct(); // Call the getProduct function
             },
+            showModalComponent(){
+                this.showModal = true;
+            },
             async productVue_del(id){
                 let url= `http://127.0.0.1:8000/api/delproduct/${id}`;
                 await axios.delete(url).then(response =>{
@@ -90,9 +100,9 @@ import editProductComponent from './EditProduct.vue';
                     console.log(error);
                 });
             },
-            updateModal(id){
+            updateModal(product){
+                this.selectedProduct = product;
                 this.showModal = true;
-                console.log(id, "product here");
             }
         },
         mounted(){
@@ -153,6 +163,13 @@ import editProductComponent from './EditProduct.vue';
 }
 .btn.btn-warning{
     margin-right: 10px;
+}
+#addbtn.btn.btn-primary{
+    float: none;
+    
+}
+.form-control.search{
+    width: 89%;
 }
 
 </style>
