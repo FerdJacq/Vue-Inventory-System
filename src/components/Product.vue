@@ -6,8 +6,8 @@
                 <button @click="showModalComponent" id="addbtn" class="btn btn-primary mt-4 mb-4">Add Product</button>
             </div>
              <modalComponent v-if="showModal " @close="showModal = false" >
-                <addProductComponent  @close="closeModal"/>
-                <editProductComponent v-if="selectedProduct" :product="selectedProduct" @close="closeModal"/>
+                <addProductComponent  @close="closeModal" v-show="showAddProductComponent" />
+                <editProductComponent v-if="selectedProduct" :product="selectedProduct" v-show="showEditProductComponent" @close="closeModal"/>
             </modalComponent>
             
             
@@ -68,6 +68,8 @@ import editProductComponent from './EditProduct.vue';
                     price:null,
                     }],
                 selectedProduct:null,
+                showAddProductComponent: false,
+                showEditProductComponent: false,
             }
         },
         created(){
@@ -89,6 +91,8 @@ import editProductComponent from './EditProduct.vue';
             },
             showModalComponent(){
                 this.showModal = true;
+                this.showAddProductComponent = true;
+                this.showEditProductComponent = false;
             },
             async productVue_del(id){
                 let url= `http://127.0.0.1:8000/api/delproduct/${id}`;
@@ -102,6 +106,8 @@ import editProductComponent from './EditProduct.vue';
             },
             updateModal(product){
                 this.selectedProduct = product;
+                this.showAddProductComponent = false;
+                this.showEditProductComponent = true;
                 this.showModal = true;
             }
         },

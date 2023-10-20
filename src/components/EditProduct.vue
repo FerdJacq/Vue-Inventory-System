@@ -15,22 +15,22 @@
                      <div class="form-group">
                          <label class="form-label mt-2">Name</label>
                          <input type="text" class="form-control"
-                         v-model="product.name" placeholder="Enter Name" >
+                         v-model="name" placeholder="Enter Name" >
                      </div>
                      <div class="form-group">
                          <label class="form-label mt-2">Description</label>
                          <input type="text" class="form-control"
-                         v-model="product.description" placeholder="Description">
+                         v-model="description" placeholder="Description">
                      </div>
                      <div class="form-group">
                          <label class="form-label mt-2">Quantity</label>
                          <input type="number" class="form-control"
-                         v-model="product.quantity" placeholder="Quantity">
+                         v-model="quantity" placeholder="Quantity">
                      </div>
                      <div class="form-group">
                          <label class="form-label mt-2">Price</label>
                          <input type="number" class="form-control"
-                         v-model="product.price" placeholder="Price">
+                         v-model="price" placeholder="Price">
                      </div>
                      <div class="form-group">
                          <label class="form-label mt-2">Image</label>
@@ -53,16 +53,14 @@ import axios from 'axios';
         data(){
             return{
                 errors:[],
-                updateproduct:{
-                    name: this.product ? this.product.name : '',
-                    description: this.product ? this.product.description : '',
-                    quantity: this.product ? this.product.quantity : '',
-                    price: this.product ? this.product.price : '',
-                },
+                name: '',
+                description: '',
+                quantity: '',
+                price: '',
             }
         },
         created(){
-            this.getProductbyId();
+            
         },
         methods:{
             async productVue_update(){
@@ -82,15 +80,15 @@ import axios from 'axios';
 
                 if(!this.errors.length){
                     let formData = new FormData();
-                    formData.append('name',this.products.name);
-                    formData.append('description',this.products.description);
-                    formData.append('quantity',this.products.quantity);
-                    formData.append('price',this.products.price);
-                    let url = `http://127.0.0.1:8000/api/updateproduct/${this.$route.params.id}`;
+                    formData.append('name',this.name);
+                    formData.append('description',this.description);
+                    formData.append('quantity',this.quantity);
+                    formData.append('price',this.price);
+                    let url = `http://127.0.0.1:8000/api/updateproduct/${this.product.id}`;
                     await axios.post(url, formData).then((response)=>{
                         console.log(response);
                         if(response.status == 200){
-                            alert(response.data.message);
+                            this.$emit('close');
                         }else{
                             console.log('error');
                         }
@@ -100,17 +98,22 @@ import axios from 'axios';
                 }
             },
             async getProductbyId(){
-                let url = `http://127.0.0.1:8000/api/editproduct/${this.$route.params.id}/edit`;
+                let url = `http://127.0.0.1:8000/api/editproduct/${this.product.id}/edit`;
                 await axios.get(url).then(response=>{
                     console.log(response);
                     this.products = response.data;
+                    this.name = this.products.name;
+                    this.description = this.products.description;
+                    this.quantity = this.products.quantity;
+                    this.price = this.products.price;
                 });
             }
         },
         mounted: function(){
             console.log('Edit Component is Loaded!!');
+            this.getProductbyId();
         },
-        props:['product', 'updateProduct'],
+        props:['product'],
     }
 </script>
 <style>
