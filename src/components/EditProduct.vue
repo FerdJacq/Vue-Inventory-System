@@ -25,7 +25,7 @@
                      <div class="form-group">
                          <label class="form-label mt-2">Quantity</label>
                          <input type="number" class="form-control"
-                         v-model="quantity" placeholder="Quantity">
+                         v-model="quantity" placeholder="Quantity" readonly>
                      </div>
                      <div class="form-group">
                          <label class="form-label mt-2">Price</label>
@@ -46,7 +46,7 @@
  </template>
  
 <script>
-import axios from 'axios';
+import axios from '../axios-connection';
 
     export default{
         name:'editProductComponent',
@@ -84,8 +84,7 @@ import axios from 'axios';
                     formData.append('description',this.description);
                     formData.append('quantity',this.quantity);
                     formData.append('price',this.price);
-                    let url = `http://127.0.0.1:8000/api/updateproduct/${this.product.id}`;
-                    await axios.post(url, formData).then((response)=>{
+                    await axios.post(`/updateproduct/${this.product.id}`, formData).then((response)=>{
                         console.log(response);
                         if(response.status == 200){
                             this.$emit('close');
@@ -98,8 +97,7 @@ import axios from 'axios';
                 }
             },
             async getProductbyId(){
-                let url = `http://127.0.0.1:8000/api/editproduct/${this.product.id}/edit`;
-                await axios.get(url).then(response=>{
+                await axios.get(`/editproduct/${this.product.id}/edit`).then(response=>{
                     console.log(response);
                     this.products = response.data;
                     this.name = this.products.name;

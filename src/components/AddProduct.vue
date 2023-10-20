@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from '../axios-connection';
 
     export default{
         name: 'addProductComponent',
@@ -83,8 +83,7 @@ import axios from 'axios';
                     formData.append('description',this.products.description);
                     formData.append('quantity',this.products.quantity);
                     formData.append('price',this.products.price);
-                    let url = 'http://127.0.0.1:8000/api/addproduct';
-                    await axios.post(url, formData).then((response)=>{
+                    await axios.post('/addproduct', formData).then((response)=>{
                         console.log(response);
                         this.$emit('close');
                     });

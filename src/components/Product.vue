@@ -2,7 +2,8 @@
     <div class="container">
         <div>
             <div class="d-flex">
-               <input class="search form-control me-sm-2 mt-4 mb-4" type="search" placeholder="Search">
+               <input v-model="searchQuery" @input="updateSuggestions" @blur="clearSuggestions" class="search form-control me-sm-2 mt-4 mb-4" type="search" placeholder="Search" />
+                    <product-suggestion :suggestions="suggestions" :select-suggestion="selectSuggestion"/>
                 <button @click="showModalComponent" id="addbtn" class="btn btn-primary mt-4 mb-4">Add Product</button>
             </div>
              <modalComponent v-if="showModal " @close="showModal = false" >
@@ -49,10 +50,11 @@
 </template>
 
 <script>
-import axios from 'axios';
 import modalComponent from '../components/Modal.vue';
 import addProductComponent from './AddProduct.vue';
 import editProductComponent from './EditProduct.vue';
+import productSuggestion from './ProductSuggestion.vue';
+import axios from '../axios-connection';
 
 
     export default{
@@ -61,15 +63,12 @@ import editProductComponent from './EditProduct.vue';
             return {
                 productVue:Array,
                 showModal:false,
-                product: [{
-                    name: null,
-                    description: null,
-                    quantity: null,
-                    price:null,
-                    }],
+                product:Array,
                 selectedProduct:null,
                 showAddProductComponent: false,
                 showEditProductComponent: false,
+                searchQuery: '',
+                suggestions: []
             }
         },
         created(){
@@ -77,10 +76,9 @@ import editProductComponent from './EditProduct.vue';
         },
         methods:{
             async getProduct(){
-                let url = 'http://127.0.0.1:8000/api/product';
-                await axios.get(url).then(response =>{
+                await axios.get('/product').then(response =>{
                     this.productVue = response.data.products;
-                    console.log(this.productVue);
+                    console.log(this.productVue);   
                 }).catch(error => {
                     console.log(error);
                 });
@@ -94,9 +92,14 @@ import editProductComponent from './EditProduct.vue';
                 this.showAddProductComponent = true;
                 this.showEditProductComponent = false;
             },
+            updateModal(product){
+                this.selectedProduct = product;
+                this.showAddProductComponent = false;
+                this.showEditProductComponent = true;
+                this.showModal = true;
+            },
             async productVue_del(id){
-                let url= `http://127.0.0.1:8000/api/delproduct/${id}`;
-                await axios.delete(url).then(response =>{
+                await axios.delete(`/delproduct/${id}`).then(response =>{
                     if(response.data.code == 200 ){
                         this.getProduct();
                     }
@@ -104,24 +107,48 @@ import editProductComponent from './EditProduct.vue';
                     console.log(error);
                 });
             },
-            updateModal(product){
-                this.selectedProduct = product;
-                this.showAddProductComponent = false;
-                this.showEditProductComponent = true;
-                this.showModal = true;
-            }
+            //search Suggestion
+            updateSuggestions() {
+                if (this.filteredProducts) {
+                    this.suggestions = this.filteredProducts.slice(0, 5); // Limit suggestions to 5
+                }
+            },
+            clearSuggestions() {
+                this.suggestions = [];
+            },
+            selectSuggestion(suggestion) {
+                this.searchQuery = suggestion.name;
+                this.clearSuggestions();
+            },
+            fetchProducts() {
+                axios.get('/product').then(response => {
+                        console.log('API Response:', response.data); // Add this line for debugging
+                        this.product = response.data;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching products:', error);
+                    });
+                }
+
         },
         mounted(){
             console.log('Product is mounted');
+            this.fetchProducts();
         },
         components:{
             modalComponent,
             addProductComponent,
             editProductComponent,
+            productSuggestion,
         },
-    
-    }
-
+        computed: {
+            filteredProducts() {
+                return this.product.filter(product => 
+                product.name.toLowerCase().includes(this.searchQuery.toLowerCase())
+            );
+        }
+    },
+}
 </script>
 
 <style>
