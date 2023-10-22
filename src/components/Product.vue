@@ -2,7 +2,7 @@
     <div class="container">
         <div>
             <div class="d-flex">
-               <input v-model="searchQuery" @input="updateSuggestions" @blur="clearSuggestions" class="search form-control me-sm-2 mt-4 mb-4" type="search" placeholder="Search" />
+               <!-- <input v-model="searchQuery" @input="updateSuggestions" @blur="clearSuggestions" class="search form-control me-sm-2 mt-4 mb-4" type="search" placeholder="Search" /> -->
                     <product-suggestion :suggestions="suggestions" :select-suggestion="selectSuggestion"/>
                 <button @click="showModalComponent" id="addbtn" class="btn btn-primary mt-4 mb-4">Add Product</button>
             </div>

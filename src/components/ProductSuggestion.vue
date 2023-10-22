@@ -1,6 +1,6 @@
 <template>
     <div>
-      <input v-model="searchTerm" @input="handleInput" placeholder="Search...">
+      <input class="search form-control me-sm-2 mt-4 mb-4" type="search" v-model="searchTerm" @input="handleInput" placeholder="Search...">
       <ul v-if="searchResults.length">
         <li v-for="result in searchResults" :key="result.id">{{ result.name }}</li>
       </ul>
