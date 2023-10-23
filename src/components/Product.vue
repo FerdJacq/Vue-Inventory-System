@@ -9,6 +9,7 @@
              <modalComponent v-if="showModal " @close="showModal = false" >
                 <addProductComponent  @close="closeModal" v-show="showAddProductComponent" />
                 <editProductComponent v-if="selectedProduct" :product="selectedProduct" v-show="showEditProductComponent" @close="closeModal"/>
+                <addStockComponent v-if="selectedProduct" :product="selectedProduct" v-show="showAddStockComponent"/>
             </modalComponent>
             
             
@@ -22,6 +23,7 @@
                     <th scope="col">Description</th>
                     <th scope="col">Quantity</th>
                     <th scope="col">Price</th>
+                    <th scope="col">Status</th>
                     <th scope="col">Action</th>
                 </tr>
             </thead>
@@ -32,17 +34,22 @@
                     <th scope="row">{{ product.description }}</th>
                     <th scope="row">{{ product.quantity }}</th>
                     <th scope="row">{{ product.price }}</th>
+                    <th scope="row"> 
+                        <span v-if="product.quantity > 0">STOCK</span> 
+                        <span v-else>No Stock</span>
+                    </th>
                     <th scope="row">
-                        
-                        <!-- <router-link class="btn btn-warning btn-sm" 
-                        :to="{name:'editProductComponent', params:{id:product.id}}"
-                        >Edit</router-link> -->
-                        
-                        <button class="btn btn-warning btn-sm" 
-                        @click.prevent="updateModal(product)" id="editbtn">Edit</button>
+                        <div class="col">
+                            <button class="btn btn-primary btn-sm"
+                            @click.prevent="addStock(product)" id="addStockbtn">Add Stock</button>
 
-                        <button class="btn btn-danger btn-sm" 
-                        @click.prevent="productVue_del(product.id)" >Delete</button></th>
+                            <button class="btn btn-warning btn-sm" 
+                            @click.prevent="updateModal(product)" id="editbtn">Edit</button>
+                        </div>
+                        <div class="col">
+                            <button class="btn btn-danger btn-sm" 
+                            @click.prevent="productVue_del(product.id)" >Delete</button>
+                        </div></th>
                 </tr>
             </tbody>
         </table>
@@ -54,6 +61,7 @@ import modalComponent from '../components/Modal.vue';
 import addProductComponent from './AddProduct.vue';
 import editProductComponent from './EditProduct.vue';
 import productSuggestion from './ProductSuggestion.vue';
+import addStockComponent from './AddStock.vue';
 import axios from '../axios-connection';
 
 
@@ -67,6 +75,7 @@ import axios from '../axios-connection';
                 selectedProduct:null,
                 showAddProductComponent: false,
                 showEditProductComponent: false,
+                addProductComponent:false,
                 searchQuery: '',
                 suggestions: []
             }
@@ -91,12 +100,21 @@ import axios from '../axios-connection';
                 this.showModal = true;
                 this.showAddProductComponent = true;
                 this.showEditProductComponent = false;
+                this.showAddStockComponent = false;
             },
             updateModal(product){
                 this.selectedProduct = product;
                 this.showAddProductComponent = false;
                 this.showEditProductComponent = true;
+                this.showAddStockComponent = false;
                 this.showModal = true;
+            },
+            addStock(product){
+                this.selectedProduct = product;
+                this.showModal = true;
+                this.showAddStockComponent = true;
+                this.showAddProductComponent = false;
+                this.showEditProductComponent = false;
             },
             async productVue_del(id){
                 await axios.delete(`/delproduct/${id}`).then(response =>{
@@ -128,8 +146,7 @@ import axios from '../axios-connection';
                     .catch(error => {
                         console.error('Error fetching products:', error);
                     });
-                }
-
+            },
         },
         mounted(){
             console.log('Product is mounted');
@@ -140,6 +157,7 @@ import axios from '../axios-connection';
             addProductComponent,
             editProductComponent,
             productSuggestion,
+            addStockComponent,
         },
         computed: {
             filteredProducts() {
@@ -196,6 +214,8 @@ import axios from '../axios-connection';
 }
 .btn.btn-warning{
     margin-right: 10px;
+    width: 27%;
+    margin-bottom: 10px;
 }
 #addbtn.btn.btn-primary{
     float: none;
